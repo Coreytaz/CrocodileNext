@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "./Canvas.module.scss";
 
 type CanvasProps = {
   width: number;
@@ -33,12 +32,7 @@ const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
   }, [width, height]);
 
   return (
-    <canvas
-      width={width}
-      height={height}
-      ref={rootRef}
-      className={styles.root}
-    />
+    <canvas width={width} height={height} ref={rootRef} className="block" />
   );
 };
 

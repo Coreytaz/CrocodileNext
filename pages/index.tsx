@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import styles from "../styles/Home.module.scss";
+import { buttonClassName } from "../styles/button";
 
 const Home: NextPage = () => {
   return (
@@ -11,14 +11,18 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className={styles.container}>
-        <h1>Crocodile-Next</h1>
-        <p>
-          Сыграйте в крокодила с друзьями.
-          <br />
-          Догадаются ли они что ты думаешь?
-        </p>
-        <button className={styles.startGame}>Создать комнату</button>
+      <div className="flex min-h-dvh items-center justify-center p-6 text-center">
+        <div className="w-full max-w-[1200px]">
+          <h1 className="my-[0.67em] text-[36px] leading-tight font-extrabold wrap-anywhere text-white text-shadow-[0_4px_4px_rgb(0_0_0/0.25)] md:text-[62px] md:leading-[50px]">
+            Crocodile-Next
+          </h1>
+          <p className="mt-[1em] mb-[60px] text-[22px] leading-[39px] font-normal text-white text-shadow-[0_4px_4px_rgb(0_0_0/0.25)]">
+            Сыграйте в крокодила с друзьями.
+            <br />
+            Догадаются ли они что ты думаешь?
+          </p>
+          <button className={buttonClassName}>Создать комнату</button>
+        </div>
       </div>
     </div>
   );

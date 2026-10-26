@@ -16,12 +16,14 @@
     "socket.io-client": "4.8.4"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "4.3.3",
     "@types/node": "26.6.5",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "oxlint": "1.89.0",
+    "postcss": "8.5.31",
     "prettier": "3.9.10",
-    "sass": "1.106.1",
+    "tailwindcss": "4.3.3",
     "typescript": "7.0.2"
   },
   "engines": {

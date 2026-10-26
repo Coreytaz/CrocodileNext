@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import React from "react";
 import Canvas from "../../components/Canvas";
-import styles from "../../styles/Game.module.scss";
+import { buttonClassName } from "../../styles/button";
 
 const Home: NextPage = () => {
   const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -18,13 +18,13 @@ const Home: NextPage = () => {
       setSize((previous) =>
         previous.width === width && previous.height === height
           ? previous
-          : { width, height }
+          : { width, height },
       );
     });
     observer.observe(container);
     return () => observer.disconnect();
   }, []);
-  
+
   return (
     <div>
       <Head>
@@ -33,26 +33,32 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className={styles.game}>
-        <div className={styles.chat}>
-          <div className={styles.chatTitle}>Чат</div>
-          <div className={styles.chatMessages}>
-            <div className={styles.chatItem}>
+      <div className="grid min-h-dvh grid-cols-[minmax(0,1fr)] gap-4 p-4 lg:h-dvh lg:grid-cols-[minmax(0,3fr)_minmax(0,7fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-[30px] lg:p-10">
+        <div className="order-2 flex h-[400px] min-h-0 min-w-0 flex-col rounded-[15px] bg-white lg:order-1 lg:h-full">
+          <div className="shrink-0 border-b border-black/10 p-[30px] text-[18px] leading-normal font-bold">
+            Чат
+          </div>
+          <div className="min-h-0 flex-1 overflow-y-auto wrap-anywhere">
+            <div className="p-5">
               <b>Vasya</b>
-              <p>Hello world!!!</p>
+              <p className="mt-[5px] mb-4">Hello world!!!</p>
             </div>
           </div>
-          <div className={styles.chatInput}>
-            <input type="text" />
-            <button>Отправить</button>
+          <div className="shrink-0 p-[15px]">
+            <input
+              type="text"
+              aria-label="Сообщение"
+              className="mb-[10px] w-full rounded-[15px] border-2 border-[#767676] bg-white p-[10px] text-[18px] leading-normal"
+            />
+            <button className={`${buttonClassName} w-full`}>Отправить</button>
           </div>
         </div>
 
-        <div ref={canvasRef} className={styles.canvas}>
-          <Canvas
-            width={size.width}
-            height={size.height}
-          />
+        <div
+          ref={canvasRef}
+          className="order-1 h-[60dvh] min-h-0 min-w-0 rounded-[15px] bg-white lg:order-2 lg:h-full"
+        >
+          <Canvas width={size.width} height={size.height} />
         </div>
       </div>
     </div>

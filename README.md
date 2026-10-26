@@ -20,7 +20,9 @@ Always use npm run build for production. Built-in Next.js type validation is dis
 
 ## Dependency upgrade
 
-All direct dependency versions are pinned; package-lock.json pins the dependency tree. Use npm ci to reproduce it. Prettier and Sass are development dependencies required for authoring/building.
+All direct dependency versions are pinned; package-lock.json pins the dependency tree. Use npm ci to reproduce it. Prettier, Tailwind CSS 4 and its PostCSS integration are development dependencies required for authoring/building.
+
+Styles use Tailwind utility classes with Preflight enabled. The global CSS entry point is styles/globals.css, imported by pages/_app.tsx; postcss.config.mjs configures @tailwindcss/postcss. Shared button classes live in styles/button.ts. The game uses a two-column layout from 1024px; smaller screens show the canvas above the chat. Canvas drawing currently supports the mouse only.
 
 ESLint and eslint-config-next were replaced with Oxlint to avoid the old plugin ecosystem's restrictions on current TypeScript and ESLint versions. Native React (including Hooks), Next.js, TypeScript, import and accessibility plugins are enabled. Correctness rules are errors, with explicit checks for all native Next.js rules, Hooks dependencies, image alternative text and ARIA usage. Next.js page links and synchronous scripts are errors, matching the core-web-vitals severity upgrades. Warnings also fail lint.
 
