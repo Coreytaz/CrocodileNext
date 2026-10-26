@@ -1,13 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": [
-    "eslint",
-    "typescript",
-    "react",
-    "nextjs",
-    "import",
-    "jsx-a11y"
-  ],
+  "plugins": ["eslint", "typescript", "react", "nextjs", "import", "jsx-a11y"],
   "categories": {
     "correctness": "error"
   },
@@ -42,9 +35,5 @@
     "jsx-a11y/role-has-required-aria-props": "warn",
     "jsx-a11y/role-supports-aria-props": "warn"
   },
-  "ignorePatterns": [
-    ".next/**",
-    "out/**",
-    "next-env.d.ts"
-  ]
+  "ignorePatterns": [".next/**", ".next-e2e/**", "out/**", "next-env.d.ts"]
 }

@@ -1,31 +1,43 @@
 # CrocodileNext
 
-Next.js Pages Router frontend for Crocodile. Requires Node.js 24.18.0 or newer and npm.
+Игра «нарисуй и угадай» на Next.js Pages Router, React и Socket.IO. Требуются Node.js **24.18.0+** и npm. Бэкенд находится рядом, в `../crocodile-backend`.
 
-## Development
+## Запуск
 
-Run npm ci, then npm run dev. Open http://localhost:3000.
-The backend is a separate project in ../crocodile-backend and listens on port 9999.
-The current UI does not connect its room/chat buttons to the backend yet.
+1. В `../crocodile-backend` выполните `npm ci`, затем `npm run dev` (порт 9999). Бэкенд написан на TypeScript: dev-команда автоматически собирает и запускает его; для production используйте `npm run build`, затем `npm start`.
+2. В этом проекте выполните `npm ci`, затем `npm run dev`.
+3. Откройте [localhost:3000](http://localhost:3000), введите ник, создайте комнату и передайте друзьям ссылку или код.
 
-## Checks and production
+При необходимости скопируйте `.env.example` в `.env.local` и задайте `NEXT_PUBLIC_SOCKET_URL`. Для игры с другого устройства укажите доступный ему адрес сервера вместо `localhost`, а на бэкенде разрешите origin страницы через `ALLOWED_ORIGIN`. При HTTPS используйте сервер с HTTPS/WSS. Переменная `NEXT_PUBLIC_SOCKET_URL` встраивается при сборке: после изменения нужна новая сборка или перезапуск dev-сервера.
 
-- npm run lint: Oxlint; warnings fail the check.
-- npm run typecheck: standalone TypeScript 7 CLI.
-- npm run build: typecheck followed by the Next.js production build.
-- npm start: serve the production build on port 3000.
-- npm audit: dependency security report.
+## Правила и инструменты
 
-Always use npm run build for production. Built-in Next.js type validation is disabled because TypeScript 7 has a different programmatic API; standalone type checking runs first and must pass.
+- Без регистрации, таймера и очков. Владелец назначает рисующего через кнопку рядом с игроком.
+- Рисующий выбирает одно из трёх русских слов; только он видит варианты и ответ. Новый владелец комнаты назначается автоматически при окончательном уходе старого.
+- Перед рисованием открывается обязательное модальное окно с тремя словами. После выбора оно закрывается и открывает холст; до выбора рисование заблокировано. Ответы отправляются в чат; регистр, крайние пробелы и «е/ё» не учитываются.
+- Первый правильный ответ завершает раунд. Всем открывается модалка с победителем и угаданным словом. Рисующий нажимает «Выбрать слово» и переходит к выбору следующего слова; остальные нажимают «Продолжить». Просмотренный результат не открывается повторно после обновления страницы. Результат и слово также остаются в истории чата.
+- «Новое слово» и назначение другого рисующего раскрывают предыдущее слово, очищают рисунок и предлагают новые варианты.
+- Кисть, ластик, линия, прямоугольник, круг/эллипс, заливка, палитра, произвольный цвет, толщина 1–80, отмена/повтор и очистка. Поддерживаются мышь, касание и перо.
+- Холст имеет общие логические размеры 1200 × 800 и масштабируется пропорционально. Изменение окна не стирает рисунок. Отмена фигуры указателем убирает её предпросмотр; начатый свободный штрих завершается.
+- На компьютере экран игры занимает высоту окна: холст, инструменты, итоги раунда и поле чата видны без прокрутки страницы. Длинные списки игроков и сообщения прокручиваются внутри панелей. На телефонах используется вертикальная раскладка.
 
-## Dependency upgrade
+## Синхронизация
 
-All direct dependency versions are pinned; package-lock.json pins the dependency tree. Use npm ci to reproduce it. Prettier, Tailwind CSS 4 and its PostCSS integration are development dependencies required for authoring/building.
+Вся игра использует Socket.IO с единственным транспортом `websocket`, без HTTP polling. Типы команд и событий находятся в `lib/protocol.ts`; описание протокола — в README бэкенда.
 
-Styles use Tailwind utility classes with Preflight enabled. The global CSS entry point is styles/globals.css, imported by pages/_app.tsx; postcss.config.mjs configures @tailwindcss/postcss. Shared button classes live in styles/button.ts. The game uses a two-column layout from 1024px; smaller screens show the canvas above the chat. Canvas drawing currently supports the mouse only.
+Сервер подтверждает команды, проверяет роли и хранит каноническое состояние. Свободные штрихи отображаются локально сразу и передаются порциями каждые 60 мс; фигуры передаются после отпускания указателя. Версии слова и ревизии рисунка защищают от устаревших событий; при пропуске ревизии клиент запрашивает снимок.
 
-ESLint and eslint-config-next were replaced with Oxlint to avoid the old plugin ecosystem's restrictions on current TypeScript and ESLint versions. Native React (including Hooks), Next.js, TypeScript, import and accessibility plugins are enabled. Correctness rules are errors, with explicit checks for all native Next.js rules, Hooks dependencies, image alternative text and ARIA usage. Next.js page links and synchronous scripts are errors, matching the core-web-vitals severity upgrades. Warnings also fail lint.
+Токен участника хранится только в `sessionStorage` этой вкладки. Обновление страницы и краткий обрыв восстанавливают роль, чат и рисунок. После отключения место сохраняется 30 секунд; после истечения срока нужно войти заново. Открытие той же сессии в другой вкладке отключает её управление в первой. Пустые комнаты удаляются через 10 минут, перезапуск сервера очищает все комнаты.
 
-This is not an identical implementation of next/core-web-vitals: only native Oxlint rules run; unsupported ESLint rules and full React Compiler analysis are not implicitly enabled. Type checking remains a separate required check.
+## Проверки
 
-Canvas sizing is measured after mount with ResizeObserver; changing its dimensions clears the drawing, as with the native canvas element. Observer and mouse listeners are cleaned up on unmount.
+- `npm run lint` — Oxlint, предупреждения считаются ошибками.
+- `npm run typecheck` — standalone TypeScript CLI.
+- `npm run build` — typecheck и production build; `npm start` запускает результат на порту 3000.
+- `npx playwright install chromium` — установить браузер для тестов один раз.
+- `npm run test:e2e` — три игрока, все инструменты и история рисунка, приватность слова, чат, смена ролей, вход по коду, перезагрузка, resize, offline/online, касание, перо и отсутствующая комната.
+- В бэкенде: `npm test` — интеграционные тесты нескольких Socket.IO-клиентов.
+
+Playwright запускает отдельные серверы на портах **3100/10099** и использует `.next-e2e`, не останавливая текущую разработку на 3000/9999. Оба соседних проекта должны быть установлены. Скриншоты и трассировки сохраняются в игнорируемом `test-results/`.
+
+Все прямые зависимости и дерево npm зафиксированы; используйте `npm ci`. Tailwind CSS 4 подключён через `styles/globals.css` и PostCSS. Встроенная проверка TypeScript в Next.js отключена из-за программного API TypeScript 7, поэтому для production используйте именно `npm run build`, включающий отдельный typecheck.
