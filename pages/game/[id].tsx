@@ -5,7 +5,25 @@ import Canvas from "../../components/Canvas";
 import styles from "../../styles/Game.module.scss";
 
 const Home: NextPage = () => {
-  const canvasRef = React.useRef<HTMLDivElement>(null!);
+  const canvasRef = React.useRef<HTMLDivElement>(null);
+  const [size, setSize] = React.useState({ width: 0, height: 0 });
+
+  React.useEffect(() => {
+    const container = canvasRef.current;
+    if (!container) return;
+
+    const observer = new ResizeObserver(() => {
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      setSize((previous) =>
+        previous.width === width && previous.height === height
+          ? previous
+          : { width, height }
+      );
+    });
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
   
   return (
     <div>
@@ -32,8 +50,8 @@ const Home: NextPage = () => {
 
         <div ref={canvasRef} className={styles.canvas}>
           <Canvas
-            width={canvasRef.current?.offsetWidth}
-            height={canvasRef.current?.offsetHeight}
+            width={size.width}
+            height={size.height}
           />
         </div>
       </div>

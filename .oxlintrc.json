@@ -1,0 +1,50 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "eslint",
+    "typescript",
+    "react",
+    "nextjs",
+    "import",
+    "jsx-a11y"
+  ],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "nextjs/no-html-link-for-pages": "error",
+    "nextjs/no-sync-scripts": "error",
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "warn",
+    "jsx-a11y/alt-text": "warn",
+    "nextjs/google-font-display": "warn",
+    "nextjs/google-font-preconnect": "warn",
+    "nextjs/inline-script-id": "warn",
+    "nextjs/next-script-for-ga": "warn",
+    "nextjs/no-assign-module-variable": "warn",
+    "nextjs/no-async-client-component": "warn",
+    "nextjs/no-before-interactive-script-outside-document": "warn",
+    "nextjs/no-css-tags": "warn",
+    "nextjs/no-document-import-in-page": "warn",
+    "nextjs/no-duplicate-head": "warn",
+    "nextjs/no-head-element": "warn",
+    "nextjs/no-head-import-in-document": "warn",
+    "nextjs/no-img-element": "warn",
+    "nextjs/no-page-custom-font": "warn",
+    "nextjs/no-script-component-in-head": "warn",
+    "nextjs/no-styled-jsx-in-document": "warn",
+    "nextjs/no-title-in-document-head": "warn",
+    "nextjs/no-typos": "warn",
+    "nextjs/no-unwanted-polyfillio": "warn",
+    "jsx-a11y/aria-props": "warn",
+    "jsx-a11y/aria-proptypes": "warn",
+    "jsx-a11y/aria-unsupported-elements": "warn",
+    "jsx-a11y/role-has-required-aria-props": "warn",
+    "jsx-a11y/role-supports-aria-props": "warn"
+  },
+  "ignorePatterns": [
+    ".next/**",
+    "out/**",
+    "next-env.d.ts"
+  ]
+}

@@ -1,34 +1,29 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# CrocodileNext
 
-## Getting Started
+Next.js Pages Router frontend for Crocodile. Requires Node.js 24.18.0 or newer and npm.
 
-First, run the development server:
+## Development
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+Run npm ci, then npm run dev. Open http://localhost:3000.
+The backend is a separate project in ../crocodile-backend and listens on port 9999.
+The current UI does not connect its room/chat buttons to the backend yet.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Checks and production
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+- npm run lint: Oxlint; warnings fail the check.
+- npm run typecheck: standalone TypeScript 7 CLI.
+- npm run build: typecheck followed by the Next.js production build.
+- npm start: serve the production build on port 3000.
+- npm audit: dependency security report.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Always use npm run build for production. Built-in Next.js type validation is disabled because TypeScript 7 has a different programmatic API; standalone type checking runs first and must pass.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Dependency upgrade
 
-## Learn More
+All direct dependency versions are pinned; package-lock.json pins the dependency tree. Use npm ci to reproduce it. Prettier and Sass are development dependencies required for authoring/building.
 
-To learn more about Next.js, take a look at the following resources:
+ESLint and eslint-config-next were replaced with Oxlint to avoid the old plugin ecosystem's restrictions on current TypeScript and ESLint versions. Native React (including Hooks), Next.js, TypeScript, import and accessibility plugins are enabled. Correctness rules are errors, with explicit checks for all native Next.js rules, Hooks dependencies, image alternative text and ARIA usage. Next.js page links and synchronous scripts are errors, matching the core-web-vitals severity upgrades. Warnings also fail lint.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This is not an identical implementation of next/core-web-vitals: only native Oxlint rules run; unsupported ESLint rules and full React Compiler analysis are not implicitly enabled. Type checking remains a separate required check.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Canvas sizing is measured after mount with ResizeObserver; changing its dimensions clears the drawing, as with the native canvas element. Observer and mouse listeners are cleaned up on unmount.
